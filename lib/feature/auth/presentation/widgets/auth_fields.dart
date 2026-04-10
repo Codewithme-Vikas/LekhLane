@@ -5,19 +5,26 @@ class AuthField extends StatelessWidget {
     super.key,
     required this.inputController,
     required this.hintText,
-    this.obscureText = false,
+    this.isObscureText = false,
   });
 
   final TextEditingController inputController;
   final String hintText;
-  final bool obscureText;
+  final bool isObscureText;
+  
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: inputController,
       decoration: InputDecoration(hintText: hintText),
-      obscureText: obscureText,
+      validator: (value)  {
+        if( value!.isEmpty ){
+          return "$hintText is missing.";
+        }
+        return null;
+      },
+      obscureText: isObscureText,
     );
   }
 }

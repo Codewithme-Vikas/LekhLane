@@ -43,4 +43,10 @@ class AppPallete {
   // --- Icon ---
   static const Color iconDefault  = Color(0xFF647A91);
   static const Color iconActive   = Color(0xFF5BA3C9);
+
+  // --- Gradient 
+  static const Color gradient1 = Color(0xFF6DCBB0);
+  static const Color gradient2 =  Color(0xFF5BA3C9);
+  static const Color gradient3 =  Color(0xFF3A7FA8);
+  static const Color transparentColor =  Colors.transparent;
 }
