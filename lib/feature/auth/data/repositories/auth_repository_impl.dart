@@ -1,28 +1,80 @@
+import 'package:blog_app/core/error/exceptions.dart';
+import 'package:blog_app/core/error/failure.dart';
+import 'package:blog_app/feature/auth/data/data_sources/auth_remote_data_source.dart';
+import 'package:blog_app/feature/auth/domain/entities/user.dart';
 import 'package:blog_app/feature/auth/domain/repository/auth_repository.dart';
+import 'package:fpdart/fpdart.dart';
 
-class AuthRepositoryImpl implements AuthRepo {
+class AuthRepoImpl implements AuthRepo {
+  final AuthRemoteDataSource remoteDataSource;
+  AuthRepoImpl({required this.remoteDataSource});
 
   @override
-  Future<void> sendOTP(String email) async {
-
+  Future<Either<Failure, User>> signUpWithUsernamePassword({
+    required String username,
+    required String email,
+    required String password,
+  }) async {
     try {
-      
-      // http call to backend
+      final user = await remoteDataSource.signUpWithUsernamePassword(
+        username: username,
+        email: email,
+        password: password,
+      );
 
-      
-    } catch (e) {
-      Exception("not able to send email");
+      return right(user);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
     }
   }
 
   @override
-  Future<void> login(String username, String password) async {}
+  Future<Either<Failure, User>> loginWithUsernamePassword({
+    required String username,
+    required String password,
+  }) async {
+    try {
+      final user = await remoteDataSource.loginWithUsernamePassword(
+        username: username,
+        password: password,
+      );
+
+      return right(user);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    }
+  }
 
   @override
-  Future<void> signUp(String username, String email, String password) async {}
+  Future<Either<Failure, User>> verfiyOTP({
+    required String username,
+    required String otp,
+  }) async {
+    try {
+      final user = await remoteDataSource.signUpWithUsernamePassword(
+        username: username,
+        password: '123',
+        email: 'lala',
+      );
+
+      return right(user);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    }
+  }
 
   @override
-  Future<void> verifyOTP(String otp) async {}
+  Future<Either<Failure, bool>> sendOtpOnEmail({required String email}) async {
+    try {
+      final user = await remoteDataSource.signUpWithUsernamePassword(
+        username: 'how',
+        email: email,
+        password: 'noman',
+      );
 
-
+      return right(true);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    }
+  }
 }

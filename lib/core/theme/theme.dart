@@ -10,13 +10,12 @@ class AppTheme {
 
   static final darkTheme = ThemeData.dark().copyWith(
     scaffoldBackgroundColor: AppPallete.background,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: AppPallete.background,
-    ),
+    appBarTheme: const AppBarTheme(backgroundColor: AppPallete.background),
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: const EdgeInsets.all(27),
       enabledBorder: _border(),
       focusedBorder: _border(AppPallete.borderFocus),
+      errorBorder: _border(AppPallete.error),
     ),
   );
 }

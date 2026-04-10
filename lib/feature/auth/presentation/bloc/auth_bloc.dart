@@ -1,28 +1,48 @@
-import 'package:bloc/bloc.dart';
-import 'package:blog_app/feature/auth/data/models/user_model.dart';
+import 'package:blog_app/feature/auth/domain/entities/user.dart';
+import 'package:blog_app/feature/auth/domain/usecases/user_login.dart';
+import 'package:blog_app/feature/auth/domain/usecases/user_sign_up.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(AuthInitial()) {
-    on<AuthSignUp>(_onAuthSignUp);
-  }
+  final UserSignUp _userSignUp;
+  final UserLogin _userLogin;
 
-  void _onAuthSignUp(AuthSignUp event, Emitter emit) {
-    try {
-      emit(AuthLoadingState());
+  AuthBloc({required UserSignUp userSignUp, required UserLogin userLogin})
+    : _userSignUp = userSignUp,
+      _userLogin = userLogin,
+      super(AuthInitial()) {
+    on<AuthSignUp>((event, emit) async {
+      emit(AuthLoading());
 
-      // call API
-      final result = true; // authRepo.sinup( p1,p2,p3,p4 );
+      final response = await _userSignUp(
+        UserSignUpParams(
+          email: event.email,
+          username: event.username,
+          password: event.password,
+        ),
+      );
 
-      if (result) {
-        emit(AuthSuccessState(user: UserModel(username: 'hi', email: 'h', password: 'i', userId: '123')));
-      }
+      response.fold(
+        (l) => emit(AuthFailure(l.message)),
+        (r) => emit(AuthSuccess(r)),
+      );
+    });
 
-      emit(AuthSuccessState(user: UserModel(username: 'null', email: 'null', password: 'null', userId: 'null')));
-    } catch (e) {
-      emit(AuthFailureState(message: e.toString()));
-    }
+    on<AuthLogin>((event, emit) async {
+      emit(AuthLoading());
+
+      final response = await _userLogin(
+        LoginParams(username: event.username, password: event.password),
+      );
+
+      response.fold(
+        (l) => emit(AuthFailure(l.message)),
+        (r) => emit(AuthSuccess(r)),
+      );
+    });
   }
 }

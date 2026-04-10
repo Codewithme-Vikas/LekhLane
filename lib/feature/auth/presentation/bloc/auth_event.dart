@@ -1,27 +1,23 @@
 part of 'auth_bloc.dart';
 
+@immutable
+sealed class AuthEvent {}
 
-abstract class AuthEvent {}
-
-
-class AuthSignUp extends AuthEvent{
+final class AuthSignUp extends AuthEvent {
   final String email;
-  final String username;
   final String password;
+  final String username;
 
   AuthSignUp({
-    required this.email,
     required this.username,
     required this.password,
+    required this.email,
   });
 }
 
-class AuthLogin extends AuthEvent{
+final class AuthLogin extends AuthEvent {
   final String username;
   final String password;
 
-  AuthLogin({
-    required this.username,
-    required this.password,
-  });
+  AuthLogin({required this.username, required this.password});
 }
