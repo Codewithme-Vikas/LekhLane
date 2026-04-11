@@ -1,6 +1,8 @@
+import 'package:blog_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:blog_app/feature/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:blog_app/feature/auth/data/repositories/auth_repository_impl.dart';
 import 'package:blog_app/feature/auth/domain/repository/auth_repository.dart';
+import 'package:blog_app/feature/auth/domain/usecases/current_user.dart';
 import 'package:blog_app/feature/auth/domain/usecases/user_login.dart';
 import 'package:blog_app/feature/auth/domain/usecases/user_sign_up.dart';
 import 'package:blog_app/feature/auth/presentation/bloc/auth_bloc.dart';
@@ -16,26 +18,33 @@ Future<void> initDependencies() async {
 }
 
 void _initAuth() {
-  serviceLocator.registerFactory<AuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(dio: serviceLocator<Dio>()),
-  );
+  serviceLocator
+    // DataSource
+    ..registerFactory<AuthRemoteDataSource>(
+      () => AuthRemoteDataSourceImpl(dio: serviceLocator<Dio>()),
+    )
+    // Repository
+    ..registerFactory<AuthRepo>(
+      () => AuthRepoImpl(
+        remoteDataSource: serviceLocator<AuthRemoteDataSource>(),
+      ),
+    )
+    // UseCases
+    ..registerFactory(() => UserSignUp(authRepo: serviceLocator<AuthRepo>()))
+    ..registerFactory(() => UserLogin(serviceLocator<AuthRepo>()))
+    ..registerFactory(() => CurrentUser(serviceLocator<AuthRepo>()));
 
-  serviceLocator.registerFactory<AuthRepo>(
-    () =>
-        AuthRepoImpl(remoteDataSource: serviceLocator<AuthRemoteDataSource>()),
-  );
-
-  serviceLocator.registerFactory(
-    () => UserSignUp(authRepo: serviceLocator<AuthRepo>()),
-  );
-
-  serviceLocator.registerFactory(() => UserLogin(serviceLocator<AuthRepo>()));
-
+  // We can also do this.
+  // Bloc
   serviceLocator.registerLazySingleton(
     // Singleton -> persistent state
     () => AuthBloc(
       userSignUp: serviceLocator(),
       userLogin: serviceLocator(),
+      currentUser: serviceLocator<CurrentUser>(),
+      appUserCubit: serviceLocator(),
     ), // auto detect which need to pass -> serviceLocator<UserSignUP>
   );
+
+  serviceLocator.registerLazySingleton<AppUserCubit>(() => AppUserCubit());
 }

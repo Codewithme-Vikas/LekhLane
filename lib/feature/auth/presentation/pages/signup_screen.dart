@@ -53,7 +53,6 @@ class _SignupScreenState extends State<SignupScreen> {
         margin: const EdgeInsets.all(16),
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
-            // TODO: implement listener
             if (state is AuthFailure) {
               showSnackBar(context, state.message);
             }

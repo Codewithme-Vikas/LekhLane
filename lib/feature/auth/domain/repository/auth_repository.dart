@@ -1,4 +1,4 @@
-import 'package:blog_app/feature/auth/domain/entities/user.dart';
+import 'package:blog_app/core/common/entities/user.dart';
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/error/failure.dart';
 
@@ -21,4 +21,6 @@ abstract interface class AuthRepo {
   });
 
   Future<Either<Failure, bool>> sendOtpOnEmail({required String email});
+
+  Future<Either<Failure, User>> getCurrentUserData();
 }

@@ -1,13 +1,28 @@
 import 'package:blog_app/core/error/exceptions.dart';
 import 'package:blog_app/core/error/failure.dart';
 import 'package:blog_app/feature/auth/data/data_sources/auth_remote_data_source.dart';
-import 'package:blog_app/feature/auth/domain/entities/user.dart';
+import 'package:blog_app/core/common/entities/user.dart';
 import 'package:blog_app/feature/auth/domain/repository/auth_repository.dart';
 import 'package:fpdart/fpdart.dart';
 
 class AuthRepoImpl implements AuthRepo {
   final AuthRemoteDataSource remoteDataSource;
   AuthRepoImpl({required this.remoteDataSource});
+
+  @override
+  Future<Either<Failure, User>> getCurrentUserData() async {
+    try {
+      final User? user = await remoteDataSource.getCurrentUserData();
+
+      if (user == null) {
+        return left(Failure("User is not logged In!"));
+      }
+
+      return right(user);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    }
+  }
 
   @override
   Future<Either<Failure, User>> signUpWithUsernamePassword({

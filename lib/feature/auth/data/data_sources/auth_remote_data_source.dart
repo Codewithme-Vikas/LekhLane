@@ -15,12 +15,44 @@ abstract interface class AuthRemoteDataSource {
   });
 
   Future<bool> sendOtpOnEmail({required String email});
+
+  Future<UserModel?> getCurrentUserData();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   // inject any dependency -> by constructor [ DI concept ]
   final Dio dio;
   AuthRemoteDataSourceImpl({required this.dio});
+
+  @override
+  Future<UserModel?> getCurrentUserData() async {
+    try {
+      final token = true; // get from local-storage
+
+      if (!token) {
+        throw ServerException("User is logged In");
+      }
+
+      //final response = await dio.get("path/userprofile");
+
+      //if (response == null) {
+      //  return null;
+      //}
+
+      await Future.delayed(Duration(seconds: 5));
+
+      final Map<String, dynamic> userJson = {
+        'id': "123",
+        'username': "ikas",
+        'email': "ikas@gmail.com",
+      };
+
+      //return UserModel.fromJson(userJson);
+      throw ServerException("User is null");
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
 
   @override
   Future<bool> sendOtpOnEmail({required String email}) async {
