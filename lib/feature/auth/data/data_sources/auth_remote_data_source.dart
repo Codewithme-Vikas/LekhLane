@@ -47,8 +47,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'email': "ikas@gmail.com",
       };
 
-      //return UserModel.fromJson(userJson);
-      throw ServerException("User is null");
+      return UserModel.fromJson(userJson);
+      //throw ServerException("User is null");
     } catch (e) {
       throw ServerException(e.toString());
     }

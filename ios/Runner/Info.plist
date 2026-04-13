@@ -65,6 +65,10 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
+	</array>	
+    <string>NSPhotoLibraryUsageDescription </string>
+	<key>Require permission for selecting photo to add a image while posting a blog</key>
+    <string>NSCameraUsageDescription </string>
+	<key>Require permission for capture a image to add it on while posting a blog</key>
 </dict>
 </plist>
