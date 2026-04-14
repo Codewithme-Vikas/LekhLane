@@ -39,7 +39,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       //  return null;
       //}
 
-      await Future.delayed(Duration(seconds: 5));
+      await Future.delayed(Duration(seconds: 1));
 
       final Map<String, dynamic> userJson = {
         'id': "123",
