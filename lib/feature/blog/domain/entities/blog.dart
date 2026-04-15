@@ -8,6 +8,7 @@ class Blog {
   File? image;
   final DateTime updatedAt;
   final List<String> categories;
+  String? authorName;
 
   Blog({
     required this.id,
@@ -16,5 +17,6 @@ class Blog {
     required this.content,
     required this.updatedAt,
     required this.categories,
+    this.authorName,
   });
 }

@@ -48,4 +48,16 @@ class BlogRepoImpl implements BlogRepo {
       return left(Failure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, List<Blog>>> getAllBlogs() async {
+    try {
+      final uploadedBlog = await blogRemoteDataSource.getAllBlogs();
+
+      return right(uploadedBlog);
+      // return left(Failure("Failure : Blog is not uploaded!"));
+    } on ServerException catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
 }

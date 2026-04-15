@@ -9,6 +9,7 @@ import 'package:blog_app/feature/auth/presentation/bloc/auth_bloc.dart';
 import 'package:blog_app/feature/blog/data/data_sources/blog_remote_data_source.dart';
 import 'package:blog_app/feature/blog/data/repositories/blog_repository_impl.dart';
 import 'package:blog_app/feature/blog/domain/repositories/blog_repository.dart';
+import 'package:blog_app/feature/blog/domain/usecases/get_all_blogs.dart';
 import 'package:blog_app/feature/blog/domain/usecases/upload_blog.dart';
 import 'package:blog_app/feature/blog/presentation/bloc/blog_bloc.dart';
 import 'package:dio/dio.dart';
@@ -66,12 +67,14 @@ void _initBlog() {
       () => BlogRepoImpl(serviceLocator<BlogRemoteDataSource>()),
     )
     // UseCases
-    ..registerFactory(() => UploadBlog(serviceLocator<BlogRepo>()));
+    ..registerFactory(() => UploadBlog(serviceLocator<BlogRepo>()))
+    ..registerFactory(() => GetAllBlogs(serviceLocator<BlogRepo>()));
 
   serviceLocator.registerLazySingleton(
     // Singleton -> persistent state
     () => BlogBloc(
       uploadBlog: serviceLocator(),
+      getAllBlogs: serviceLocator(),
     ), // auto detect which need to pass -> serviceLocator<UserSignUp>
   );
 }

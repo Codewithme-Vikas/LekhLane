@@ -83,7 +83,7 @@ class _AddNewBlogScreenState extends State<AddNewBlogScreen> {
 
   @override
   void dispose() {
-    _blogContentController.dispose();
+    _blogTitleController.dispose();
     _blogContentController.dispose();
 
     super.dispose();
@@ -99,7 +99,7 @@ class _AddNewBlogScreenState extends State<AddNewBlogScreen> {
           Navigator.pushAndRemoveUntil(
             context,
             BlogScreen.route(),
-            (_) => false,
+            (route) => false,
           );
         }
       },
