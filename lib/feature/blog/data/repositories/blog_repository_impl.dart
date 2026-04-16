@@ -23,26 +23,18 @@ class BlogRepoImpl implements BlogRepo {
       BlogModel blogModel = BlogModel(
         id: 'don not send it yourself, Db create id itself',
         authorId: 'authorId',
-        title: 'title',
-        content: 'content',
+        title: 'Motive',
+        content:
+            '"The code that breaks you today is the architecture that defines you tomorrow." ',
         updatedAt: DateTime.now(),
-        categories: ['categories'],
+        categories: ['flutter'],
       );
 
-      //final uploadedBlog = await blogRemoteDataSource.uploadBlog(blogModel);
+      final BlogModel uploadedBlog = await blogRemoteDataSource.uploadBlog(
+        blogModel,
+      );
 
-      await Future.delayed(Duration(seconds: 3));
-
-      final uploadedBlog = {
-        'id': '123',
-        'authorId': 'author_123',
-        'title': 'earth',
-        'content': 'Earth is the our home',
-        'updatedAt': DateTime.now().toIso8601String(),
-        'categories': ['tech', 'flutter'],
-      };
-
-      return right(BlogModel.fromJson(uploadedBlog));
+      return right(uploadedBlog);
       // return left(Failure("Failure : Blog is not uploaded!"));
     } on ServerException catch (e) {
       return left(Failure(e.toString()));

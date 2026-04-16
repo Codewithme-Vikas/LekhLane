@@ -1,5 +1,6 @@
 import 'package:blog_app/core/error/exceptions.dart';
 import 'package:blog_app/core/error/failure.dart';
+import 'package:blog_app/core/network/connection_checker.dart';
 import 'package:blog_app/feature/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:blog_app/core/common/entities/user.dart';
 import 'package:blog_app/feature/auth/domain/repository/auth_repository.dart';
@@ -7,11 +8,19 @@ import 'package:fpdart/fpdart.dart';
 
 class AuthRepoImpl implements AuthRepo {
   final AuthRemoteDataSource remoteDataSource;
-  AuthRepoImpl({required this.remoteDataSource});
+  final ConnectionChecker connectionChecker;
+
+  AuthRepoImpl({
+    required this.remoteDataSource,
+    required this.connectionChecker,
+  });
 
   @override
   Future<Either<Failure, User>> getCurrentUserData() async {
     try {
+      if (!await connectionChecker.isConnected) {
+        return left(Failure("No Internet Connection"));
+      }
       final User? user = await remoteDataSource.getCurrentUserData();
 
       if (user == null) {
@@ -31,6 +40,10 @@ class AuthRepoImpl implements AuthRepo {
     required String password,
   }) async {
     try {
+      if (!await connectionChecker.isConnected) {
+        return left(Failure("No Internet Connection"));
+      }
+
       final user = await remoteDataSource.signUpWithUsernamePassword(
         username: username,
         email: email,
@@ -49,6 +62,9 @@ class AuthRepoImpl implements AuthRepo {
     required String password,
   }) async {
     try {
+      if (!await connectionChecker.isConnected) {
+        return left(Failure("No Internet Connection"));
+      }
       final user = await remoteDataSource.loginWithUsernamePassword(
         username: username,
         password: password,
@@ -66,6 +82,9 @@ class AuthRepoImpl implements AuthRepo {
     required String otp,
   }) async {
     try {
+      if (!await connectionChecker.isConnected) {
+        return left(Failure("No Internet Connection"));
+      }
       final user = await remoteDataSource.signUpWithUsernamePassword(
         username: username,
         password: '123',

@@ -46,15 +46,16 @@ class BlogViewerScreen extends StatelessWidget {
 
                 const SizedBox(height: 4),
 
-                ClipRRect(
-                  borderRadius: BorderRadiusGeometry.circular(10),
-                  child: Image.network(
-                    "https://cdn.pixabay.com/photo/2015/04/19/08/32/flower-729510_1280.jpg",
-                    errorBuilder: (context, error, stackTrace) {
-                      return Icon(Icons.broken_image_rounded, size: 40);
-                    },
+                if (blog.image != null)
+                  ClipRRect(
+                    borderRadius: BorderRadiusGeometry.circular(10),
+                    child: Image.network(
+                      "https://cdn.pixabay.com/photo/2015/04/19/08/32/flower-729510_1280.jpg",
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(Icons.broken_image_rounded, size: 40);
+                      },
+                    ),
                   ),
-                ),
 
                 Text(blog.content, style: TextStyle(fontSize: 14, height: 1.8)),
               ],

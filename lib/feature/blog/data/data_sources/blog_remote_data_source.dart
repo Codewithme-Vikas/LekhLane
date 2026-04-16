@@ -23,9 +23,14 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
       //  throw ServerException("Blog is not uploading successfully");
       //}
 
-      final Map<String, dynamic> blog = defaultBlogs[1];
+      print("**********--------------------*************");
+      print(blog.toJson());
 
-      return BlogModel.fromJson(blog);
+      defaultBlogs.add(blog.toJson());
+
+      final Map<String, dynamic> uploadBlog = defaultBlogs[1];
+
+      return BlogModel.fromJson(uploadBlog);
     } catch (e) {
       throw ServerException(e.toString());
     }
