@@ -7,6 +7,7 @@ import 'package:blog_app/feature/auth/domain/usecases/current_user.dart';
 import 'package:blog_app/feature/auth/domain/usecases/user_login.dart';
 import 'package:blog_app/feature/auth/domain/usecases/user_sign_up.dart';
 import 'package:blog_app/feature/auth/presentation/bloc/auth_bloc.dart';
+import 'package:blog_app/feature/blog/data/data_sources/blog_local_data_source.dart';
 import 'package:blog_app/feature/blog/data/data_sources/blog_remote_data_source.dart';
 import 'package:blog_app/feature/blog/data/repositories/blog_repository_impl.dart';
 import 'package:blog_app/feature/blog/domain/repositories/blog_repository.dart';
@@ -15,7 +16,9 @@ import 'package:blog_app/feature/blog/domain/usecases/upload_blog.dart';
 import 'package:blog_app/feature/blog/presentation/bloc/blog_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hive/hive.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:path_provider/path_provider.dart';
 
 final serviceLocator = GetIt.instance;
 
@@ -23,6 +26,9 @@ Future<void> initDependencies() async {
   _initAuth();
 
   final Dio dio = Dio();
+
+  Hive.defaultDirectory = (await getApplicationDocumentsDirectory()).path;
+
   // core
   serviceLocator.registerLazySingleton(() => dio);
 
@@ -30,7 +36,8 @@ Future<void> initDependencies() async {
     ..registerFactory(() => InternetConnection())
     ..registerFactory<ConnectionChecker>(
       () => ConnectionCheckerImpl(serviceLocator()),
-    );
+    )
+    ..registerLazySingleton(() => Hive.box(name: 'blogs'));
 
   _initBlog();
 }
@@ -74,9 +81,16 @@ void _initBlog() {
     ..registerFactory<BlogRemoteDataSource>(
       () => BlogRemoteDataSourceImpl(serviceLocator<Dio>()),
     )
+    ..registerFactory<BlogLocalDataSource>(
+      () => BlogLocalDataSourceImpl(serviceLocator()),
+    )
     // Repository
     ..registerFactory<BlogRepo>(
-      () => BlogRepoImpl(serviceLocator<BlogRemoteDataSource>()),
+      () => BlogRepoImpl(
+        blogLocalDataSource: serviceLocator(),
+        blogRemoteDataSource: serviceLocator(),
+        connectionChecker: serviceLocator<ConnectionChecker>(),
+      ),
     )
     // UseCases
     ..registerFactory(() => UploadBlog(serviceLocator<BlogRepo>()))
